@@ -9,7 +9,18 @@ dotenv.config()
 
 
 
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+
 const app = express()
+const server = createServer(app)
+const io = new Server(server, {
+    cors: {
+        origin: process.env.ORIGIN_URL,
+        credentials: true
+    }
+})
+
 console.log("ok")
 app.use(cors({
     origin: `${process.env.ORIGIN_URL}`,
@@ -22,6 +33,12 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser(`${process.env.JWT_SECRET}`))
 
+// Middleware pour rendre io accessible dans les routes
+app.use((req, res, next) => {
+    req.io = io
+    next()
+})
+
 app.use(middleware)
     .use(connectdb)
     .use((req, res, next) => {
@@ -33,7 +50,6 @@ app.use(middleware)
 
 app.use("/api", routes)
 
-app.listen(3500, () => {
-
+server.listen(3500, () => {
     console.log("serveur open sur port 3500")
 })

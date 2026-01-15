@@ -23,27 +23,28 @@ const addEmployee = async (req, res) => {
 
         const employeeCode = `EMP-${String(count + 1).padStart(4, "0")}`
 
+        // Create User first to get the userId
+        const user = await UserCollection.insertOne({
+            email: body?.email,
+            nom: body?.name,
+            firstname: body?.firstname,
+            password: newpassword,
+            role: body?.role || 'employee'
+        })
+
+        await user.save()
+
         const employee = await EmployeeCollection.insertOne({
             employeeCode,
+            userId: user._id, // Link to User
             ...body
         })
 
         await employee.save()
-
-
-        const user = await UserCollection.insertOne({
-            email: body?.email,
-
-            password: newpassword,
-
-            role: body?.role
-        })
-
-        await user.save()
         sendMail(
             'recrutement@nexa.com',
-            "melvinphyllisakou@gmail.com",
-            "Hello ✔",
+            body.email,
+            "Creation du Compte",
             "Hello world?", // Plain-text version of the message
             `<!DOCTYPE html>
         <html lang="fr">
@@ -129,7 +130,7 @@ const addEmployee = async (req, res) => {
             <p>Pour vous connecter, cliquez sur le bouton ci-dessous :</p>
 
             <p style="text-align:center;">
-            <a href="https://portail-rh.exemple.com/login" class="btn">Se connecter au Portail RH</a>
+            <a href="${process?.env?.ORIGIN_URL}/login" class="btn">Se connecter au Portail RH</a>
             </p>
 
             <div class="footer">

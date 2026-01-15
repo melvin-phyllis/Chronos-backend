@@ -17,21 +17,26 @@ const login = async (req, res) => {
 
         // Trouver l'utilisateur
         const user = await UserCollection.findOne({ email })
-
+        console.log(user,"user")
         if (!user) {
+            console.log("User not found for email:", email);
             return res.json({
                 success: false,
-                message: "Email ou mot de passe incorrect"
+                message: "Utilisateur non trouvé (Debug)" // Distinguer l'erreur
             })
         }
 
         // Vérifier le mot de passe
+        console.log("Input password:", password);
+        console.log("Stored hash:", user.password);
+
         const checkpassword = await bcrypt.compare(password, user.password)
+        console.log("Password match result:", checkpassword);
 
         if (!checkpassword) {
             return res.json({
                 success: false,
-                message: "Email ou mot de passe incorrect"
+                message: "Mot de passe incorrect (Debug)" // Distinguer l'erreur
             })
         }
 
@@ -41,7 +46,8 @@ const login = async (req, res) => {
         // Créer le token JWT
         const token = await new jose.EncryptJWT({
             id: user._id.toString(),
-            fullname: user.fullname,
+            fullname: user.fullname, // Note: user.fullname might be undefined if not in schema, checking if I should use user.nom
+            nom: user.nom,
             email: user.email,
             role: user.role,
             sexe: user.sexe
@@ -68,6 +74,7 @@ const login = async (req, res) => {
             success: true,
             message: "Connecté avec succès",
             user: {
+                nom: user.nom,
                 role: user.role
             }
         })
@@ -75,7 +82,7 @@ const login = async (req, res) => {
     } catch (error) {
         console.error('❌ Erreur login:', error)
 
-        
+
         if (!res.headersSent) {
             return res.status(500).json({
                 success: false,

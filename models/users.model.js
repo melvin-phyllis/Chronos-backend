@@ -4,6 +4,8 @@ const UserShema = new Schema({
 
     email: { type: String, unique: true, required: true },
 
+    nom: { type: String },
+
     password: { type: String, required: true },
 
     role: { type: String, enum: ['employee', 'admin'], default: 'employee' },

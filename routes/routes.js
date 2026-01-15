@@ -2,6 +2,7 @@ import express from 'express'
 import ImageKit from 'imagekit'
 import addEmployee from '../controllers/addEmployee.js'
 import getEmployees from '../controllers/getEmployees.js'
+import getAllEmployeesForTasks from '../controllers/getAllEmployeesForTasks.js'
 import login from '../controllers/login.js'
 import logout from '../controllers/logout.js'
 import searchEmployee from '../controllers/searchEmployee.js'
@@ -9,8 +10,15 @@ import updateDocument from '../controllers/updateDocument.js'
 import EmployeeCollection from '../models/employee.modal.js'
 import leaverequestCollection from '../models/leaverequest.modal.js'
 import taskCollection from '../models/task.model.js'
+import { checkIn, checkOut, getMyTodayPresence, getAllPresence } from '../controllers/presence.js'
+import { getMyBalance } from '../controllers/congeBalance.js'
+import { createLeaveRequest, getMyLeaves, updateLeaveStatus, getAllLeaves, getLeaveStats } from '../controllers/leave.js'
 import cancelLeaverequest from '../controllers/cancelLeaverequest.js'
-
+import { getMyPayrolls, getPayrollDetails } from "../controllers/payroll.controller.js";
+import { getAvailableSurveys, submitSurveyResponse, createSurvey, getAllSurveysForAdmin, getSurveyStats } from "../controllers/survey.controller.js";
+import { getDashboardStats } from "../controllers/stats.controller.js";
+import { createTask, getAllTasks, getMyTasks, updateProgress, submitTask, validateTask, getTaskStats } from "../controllers/task.controller.js";
+import { getTopPerformers } from "../controllers/topPerformers.controller.js";
 
 const routes = express.Router()
 const imagekit = new ImageKit({
@@ -25,6 +33,7 @@ routes.post("/login", login)
 routes.post("/addEmployee", addEmployee)
 
 routes.get("/get-employees", getEmployees)
+routes.get("/employees-for-tasks", getAllEmployeesForTasks)
 
 routes.post("/search-employee", searchEmployee)
 
@@ -284,111 +293,48 @@ routes.get('/auth-imagekit', (req, res) => {
 routes.post("/update-file-document", updateDocument)
 
 
-
-
 routes.post("/cancel-leaverequest", cancelLeaverequest)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Routes Presence
+routes.post("/presence/check-in", checkIn)
+routes.post("/presence/check-out", checkOut)
+routes.get("/presence/today", getMyTodayPresence)
+routes.get("/presence/all-today", getAllPresence)
+
+
+// Routes Congés (Leave)
+routes.get("/leave/balance", getMyBalance)
+routes.post("/leave/create", createLeaveRequest)
+routes.get("/leave/my-history", getMyLeaves)
+routes.get("/leave/all", getAllLeaves)
+routes.get("/leave/stats", getLeaveStats)
+routes.patch("/leave/status/:id", updateLeaveStatus)
+
+
+// Routes Paie (Payroll)
+routes.get("/payroll/my-history", getMyPayrolls)
+routes.get("/payroll/details/:id", getPayrollDetails)
+
+// Routes Sondages (Survey)
+routes.get("/surveys/available", getAvailableSurveys)
+routes.post("/surveys/submit", submitSurveyResponse)
+routes.post("/surveys/create", createSurvey)
+routes.get("/surveys/admin/all", getAllSurveysForAdmin)
+routes.get("/surveys/:id/stats", getSurveyStats)
+
+// Routes Stats Dashboard
+routes.get("/stats/dashboard", getDashboardStats)
+
+// Routes Tâches (Tasks)
+routes.post("/tasks/create", createTask)
+routes.get("/tasks/all", getAllTasks)
+routes.get("/tasks/my", getMyTasks)
+routes.get("/tasks/stats", getTaskStats)
+routes.patch("/tasks/:id/progress", updateProgress)
+routes.patch("/tasks/:id/submit", submitTask)
+routes.patch("/tasks/:id/validate", validateTask)
+
+// Routes Top Performers
+routes.get("/stats/top-performers", getTopPerformers)
 
 export default routes

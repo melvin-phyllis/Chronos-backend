@@ -2,6 +2,8 @@ import { model, Schema } from "mongoose";
 
 const EmployeeShema = new Schema(
     {
+        userId: { type: Schema.Types.ObjectId, ref: "Users" },
+
         name: { type: String, required: true },
 
         firstname: { type: String, required: true },
@@ -21,7 +23,7 @@ const EmployeeShema = new Schema(
 
         address: { type: String },
 
-       
+
 
         emergencyContact: {
             fullname: { type: String },
@@ -48,7 +50,7 @@ const EmployeeShema = new Schema(
 
         department: { type: String, required: true },
 
-        contractType: { type: String, enum: ["CDI", "CDD", "Stage", "Prestataire"], required: true },
+        contractType: { type: String, enum: ["CDI", "CDD", "Stage", "Prestataire", "Freelance"], required: true },
 
         workingMethod: { type: String, enum: ["Remote", "Hybrid", "Onsite"], required: true },
 
