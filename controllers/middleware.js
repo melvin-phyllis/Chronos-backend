@@ -48,7 +48,7 @@ const middleware = async (req, res, next) => {
                     maxAge: 7 * 24 * 60 * 60 * 1000,
                     httpOnly: true,
                     secure: true, // Mettre à false si vous testez en HTTP (localhost)
-                    sameSite: 'lax',
+                    sameSite: 'none',
                     signed: true,
                     path: "/"
                 });

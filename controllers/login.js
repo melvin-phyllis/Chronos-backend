@@ -17,7 +17,7 @@ const login = async (req, res) => {
 
         // Trouver l'utilisateur
         const user = await UserCollection.findOne({ email })
-        console.log(user,"user")
+        console.log(user, "user")
         if (!user) {
             console.log("User not found for email:", email);
             return res.json({
@@ -62,7 +62,7 @@ const login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
             signed: true,
             path: "/"
         })
