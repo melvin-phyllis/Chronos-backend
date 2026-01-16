@@ -14,16 +14,18 @@ import { Server } from 'socket.io'
 
 const app = express()
 const server = createServer(app)
+const allowedOrigins = [process.env.ORIGIN_URL, 'https://chronos-frontend-five.vercel.app']
+
 const io = new Server(server, {
     cors: {
-        origin: process.env.ORIGIN_URL,
+        origin: allowedOrigins,
         credentials: true
     }
 })
 
 console.log("ok")
 app.use(cors({
-    origin: `${process.env.ORIGIN_URL}`,
+    origin: allowedOrigins,
     optionsSuccessStatus: 200,
 
     credentials: true, // ⬆️ CRITIQUE : permet l'envoi de cookies
